@@ -1,0 +1,94 @@
+/* Custom CSS for Registration Page */
+
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #f0f2f5;
+    --card-background-color: #ffffff;
+    --font-color: #333;
+    --error-color: #dc3545;
+    --success-color: #28a745;
+}
+
+body.register-page {
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.register-card {
+    background-color: var(--card-background-color);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.register-header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 30px;
+}
+
+.register-header h2 {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.register-header p {
+    opacity: 0.9;
+    margin: 0;
+}
+
+.register-body {
+    padding: 40px;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+.btn-register {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #0056b3;
+}
+
+.register-footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9em;
+}
+
+.register-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}

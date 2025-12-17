@@ -12,13 +12,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     $id_to_delete = intval($_GET['id']);
     // We should also delete the associated user account to keep the database clean
     // First, get the user_id from the pendaftaran table
-    $sql_get_user = "SELECT user_id FROM pendaftaran WHERE id = ?";
+    $sql_get_user = "SELECT user_id, foto FROM pendaftaran WHERE id = ?";
     $stmt_get_user = $koneksi->prepare($sql_get_user);
     $stmt_get_user->bind_param("i", $id_to_delete);
     $stmt_get_user->execute();
     $result_get_user = $stmt_get_user->get_result();
+
     if($result_get_user->num_rows > 0) {
-        $user_id_to_delete = $result_get_user->fetch_assoc()['user_id'];
+        $row = $result_get_user->fetch_assoc();
+        $user_id_to_delete = $row['user_id'];
+        $foto_to_delete = $row['foto'];
 
         // Delete from pendaftaran table
         $sql_delete_pendaftaran = "DELETE FROM pendaftaran WHERE id = ?";
@@ -31,6 +34,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
         $stmt_delete_user = $koneksi->prepare($sql_delete_user);
         $stmt_delete_user->bind_param("i", $user_id_to_delete);
         $stmt_delete_user->execute();
+        
+        // Delete photo file
+        if (!empty($foto_to_delete) && file_exists('../assets/uploads/' . $foto_to_delete)) {
+            unlink('../assets/uploads/' . $foto_to_delete);
+        }
     }
     
     header("Location: index.php?status=deleted");
@@ -95,106 +103,102 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - PPDB</title>
+    <title>Admin Dashboard - PPDB Sekolah Impian</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { min-height: 100vh; background-color: #343a40; }
-        .sidebar .nav-link { color: #adb5bd; }
-        .sidebar .nav-link.active, .sidebar .nav-link:hover { color: #fff; }
-        .stat-card { text-align: center; }
-        .stat-card .stat-number { font-size: 2.5rem; font-weight: 700; }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 <div class="d-flex">
     <!-- Sidebar -->
-    <div class="sidebar p-3 d-flex flex-column">
-        <a href="index.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <i class="fas fa-school me-2"></i>
-            <span class="fs-4">Admin PPDB</span>
-        </a>
-        <hr class="text-white">
+    <div class="sidebar d-flex flex-column p-3">
+        <div class="sidebar-header">
+            <a href="index.php" class="d-flex align-items-center text-white text-decoration-none">
+                <i class="fas fa-school me-2"></i>
+                <span class="fs-4">Admin PPDB</span>
+            </a>
+        </div>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
                 <a href="index.php" class="nav-link active" aria-current="page">
-                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                    <i class="fas fa-tachometer-alt fa-fw me-2"></i> Dashboard
                 </a>
             </li>
             <li>
                 <a href="info_crud.php" class="nav-link">
-                    <i class="fas fa-info-circle me-2"></i> Manajemen Info
+                    <i class="fas fa-info-circle fa-fw me-2"></i> Manajemen Info
                 </a>
             </li>
              <li>
                 <a href="export.php" class="nav-link">
-                    <i class="fas fa-file-excel me-2"></i> Export Data
+                    <i class="fas fa-file-excel fa-fw me-2"></i> Export Data
                 </a>
             </li>
         </ul>
-        <hr class="text-white">
-        <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fas fa-user-circle me-2"></i>
+        <div class="dropdown mt-auto">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle p-2" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle fa-fw me-2"></i>
                 <strong><?php echo htmlspecialchars($_SESSION['nama']); ?></strong>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                <li><a class="dropdown-item" href="../logout.php">Sign out</a></li>
+                <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt fa-fw me-2"></i> Sign out</a></li>
             </ul>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="flex-grow-1 p-4">
+    <div class="main-content">
         <h1 class="mb-4">Dashboard Admin</h1>
 
         <!-- Stats -->
         <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card bg-primary text-white h-100">
-                    <div class="card-body stat-card">
-                        <div class="stat-number"><?php echo $stats['total'] ?? 0; ?></div>
-                        <div class="stat-text">Total Pendaftar</div>
-                    </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stat-card bg-primary">
+                    <div class="stat-number"><?php echo $stats['total'] ?? 0; ?></div>
+                    <div class="stat-text">Total Pendaftar</div>
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-warning text-dark h-100">
-                    <div class="card-body stat-card">
-                         <div class="stat-number"><?php echo $stats['menunggu'] ?? 0; ?></div>
-                        <div class="stat-text">Menunggu Verifikasi</div>
-                    </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stat-card bg-warning text-dark">
+                     <div class="stat-number"><?php echo $stats['menunggu'] ?? 0; ?></div>
+                    <div class="stat-text">Menunggu Verifikasi</div>
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
                 </div>
             </div>
-             <div class="col-md-3">
-                <div class="card bg-success text-white h-100">
-                    <div class="card-body stat-card">
-                         <div class="stat-number"><?php echo $stats['diterima'] ?? 0; ?></div>
-                        <div class="stat-text">Diterima</div>
-                    </div>
+             <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stat-card bg-success">
+                     <div class="stat-number"><?php echo $stats['diterima'] ?? 0; ?></div>
+                    <div class="stat-text">Diterima</div>
+                    <div class="stat-icon"><i class="fas fa-user-check"></i></div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-danger text-white h-100">
-                    <div class="card-body stat-card">
-                        <div class="stat-number"><?php echo $stats['ditolak'] ?? 0; ?></div>
-                        <div class="stat-text">Ditolak</div>
-                    </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stat-card bg-danger">
+                    <div class="stat-number"><?php echo $stats['ditolak'] ?? 0; ?></div>
+                    <div class="stat-text">Ditolak</div>
+                    <div class="stat-icon"><i class="fas fa-user-times"></i></div>
                 </div>
             </div>
         </div>
         
         <!-- Pendaftar List -->
         <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-users"></i> Daftar Calon Siswa</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Daftar Calon Siswa</h5>
+                <a href="export.php" class="btn btn-sm btn-outline-success"><i class="fas fa-file-excel me-2"></i> Export All</a>
             </div>
             <div class="card-body">
                 <!-- Filter Form -->
                 <form method="GET" class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <input type="text" name="search" class="form-control" placeholder="Cari Nama atau NISN..." value="<?php echo htmlspecialchars($search); ?>">
+                         <div class="input-group">
+                             <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Cari Nama atau NISN..." value="<?php echo htmlspecialchars($search); ?>">
+                        </div>
                     </div>
                     <div class="col-md-3">
                          <select name="status" class="form-select">
@@ -213,14 +217,14 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                             <option value="Bahasa" <?php echo $filter_jurusan == 'Bahasa' ? 'selected' : ''; ?>>Bahasa</option>
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary">Filter</button>
                     </div>
                 </form>
 
                 <!-- Table -->
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover align-middle">
                         <thead class="table-dark">
                             <tr>
                                 <th>No</th>
@@ -228,25 +232,38 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                                 <th>NISN</th>
                                 <th>Jurusan</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($pendaftar_list)): ?>
                                 <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data pendaftar.</td>
+                                    <td colspan="6" class="text-center py-4">Tidak ada data pendaftar yang cocok.</td>
                                 </tr>
                             <?php else: ?>
+                                <?php 
+                                    $status_map = [
+                                        'menunggu' => ['class' => 'warning', 'text' => 'Menunggu'],
+                                        'lolos' => ['class' => 'info', 'text' => 'Lolos'],
+                                        'diterima' => ['class' => 'success', 'text' => 'Diterima'],
+                                        'ditolak' => ['class' => 'danger', 'text' => 'Ditolak']
+                                    ];
+                                ?>
                                 <?php foreach ($pendaftar_list as $index => $pendaftar): ?>
                                 <tr>
                                     <td><?php echo $index + 1; ?></td>
-                                    <td><?php echo htmlspecialchars($pendaftar['nama_lengkap']); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($pendaftar['nama_lengkap']); ?></strong></td>
                                     <td><?php echo htmlspecialchars($pendaftar['nisn']); ?></td>
                                     <td><?php echo htmlspecialchars($pendaftar['jurusan_pilihan']); ?></td>
-                                    <td><span class="badge bg-<?php echo ['menunggu' => 'warning', 'lolos' => 'info', 'diterima' => 'success', 'ditolak' => 'danger'][$pendaftar['status']]; ?>"><?php echo ucfirst($pendaftar['status']); ?></span></td>
                                     <td>
-                                        <a href="validasi.php?id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-info" title="Lihat/Validasi"><i class="fas fa-eye"></i></a>
-                                        <a href="?action=delete&id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-danger" title="Hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus data pendaftar ini?')"><i class="fas fa-trash"></i></a>
+                                        <?php $status_info = $status_map[$pendaftar['status']]; ?>
+                                        <span class="badge text-dark-emphasis bg-<?php echo $status_info['class']; ?>-subtle border border-<?php echo $status_info['class']; ?>-subtle">
+                                            <?php echo $status_info['text']; ?>
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="validasi.php?id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-primary btn-action" title="Lihat/Validasi"><i class="fas fa-eye"></i></a>
+                                        <a href="?action=delete&id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-danger btn-action" title="Hapus" onclick="return confirm('PERHATIAN: Menghapus data ini juga akan menghapus akun user terkait. Apakah Anda yakin?')"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

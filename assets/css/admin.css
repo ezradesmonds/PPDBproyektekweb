@@ -1,0 +1,124 @@
+/* Custom CSS for Admin Dashboard */
+
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --white-color: #fff;
+    --body-bg: #f4f7fc;
+    --sidebar-bg: #2c3e50;
+    --sidebar-link-color: #bdc3c7;
+    --sidebar-link-hover-color: var(--white-color);
+    --sidebar-link-active-color: var(--white-color);
+    --sidebar-link-active-bg: var(--primary-color);
+}
+
+body {
+    background-color: var(--body-bg);
+    font-family: 'Poppins', sans-serif;
+}
+
+.sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background-color: var(--sidebar-bg);
+    transition: margin-left 0.3s;
+}
+
+.sidebar .sidebar-header {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--white-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .sidebar-header .fs-4 {
+    font-weight: 600;
+}
+
+.sidebar .nav-link {
+    color: var(--sidebar-link-color);
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 4px 15px;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--sidebar-link-hover-color);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+    color: var(--sidebar-link-active-color);
+    background-color: var(--sidebar-link-active-bg);
+}
+
+.sidebar .dropdown-toggle::after {
+    display: none;
+}
+
+.sidebar .dropdown-menu {
+    border-radius: 8px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 2.5rem;
+    transition: margin-left 0.3s;
+}
+
+.stat-card {
+    border-radius: 12px;
+    color: var(--white-color);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card .stat-icon {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    font-size: 4rem;
+    opacity: 0.3;
+}
+
+.stat-card .stat-number {
+    font-size: 2.8rem;
+    font-weight: 700;
+}
+
+.stat-card .stat-text {
+    font-size: 1.1rem;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    background-color: var(--white-color);
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f0f2f5;
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.btn-action {
+    margin: 0 3px;
+}
