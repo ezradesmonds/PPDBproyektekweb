@@ -10,11 +10,12 @@ $user_id = $_SESSION['user_id'];
 $nama_siswa = $_SESSION['nama'];
 
 // Fetch data
-$sql = "SELECT * FROM pendaftaran WHERE user_id = ?";
+$sql = "SELECT p.*, u.nisn FROM pendaftaran p JOIN users u ON p.user_id = u.id WHERE p.user_id = ?";
 $stmt = $koneksi->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$pendaftaran = $stmt->get_result()->fetch_assoc();
+$result = $stmt->get_result();
+$pendaftaran = $result->fetch_assoc();
 
 $status_pendaftaran = $pendaftaran ? $pendaftaran['status'] : 'belum_mendaftar';
 

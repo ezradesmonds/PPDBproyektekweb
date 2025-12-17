@@ -202,7 +202,6 @@ if (!$pendaftaran) {
                 max-width: 100%;
                 border-radius: 0;
             }
-<<<<<<< HEAD
             .proof-header {
                 background: white !important;
                 color: black !important;
@@ -215,8 +214,6 @@ if (!$pendaftaran) {
             .section-title { color: black !important; border-bottom: 1px solid black !important; }
             .table-data th { background-color: #f0f0f0 !important; font-weight: bold; }
             .footer-note { border: 1px solid #000; border-left: 5px solid #000; }
-=======
->>>>>>> 039b87f87e5da6dda804e9ef72378a3555c80362
         }
     </style>
 </head>
