@@ -1,0 +1,79 @@
+/* Custom CSS for PPDB Sekolah */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.card {
+    border: none;
+    border-radius: .75rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+
+.status-card .card-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+}
+
+.status-card .card-text {
+    font-size: 1.1rem;
+}
+
+.timeline {
+    position: relative;
+    padding: 1rem 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 18px;
+    height: 100%;
+    width: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 45px;
+    margin-bottom: 2rem;
+}
+
+.timeline-item .icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    z-index: 1;
+}
+
+.timeline-item.active .icon {
+    background-color: var(--bs-primary);
+    color: #fff;
+}
+
+.timeline-item.success .icon {
+    background-color: var(--bs-success);
+    color: #fff;
+}
+
+.timeline-item .content {
+    background: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: .5rem;
+    border: 1px solid #dee2e6;
+}

@@ -1,0 +1,239 @@
+/* Custom CSS for Main Page */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --white-color: #fff;
+    --body-font: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--body-font);
+    line-height: 1.7;
+    color: var(--secondary-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.navbar {
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.navbar-scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.navbar .nav-link {
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--primary-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 500;
+    padding: 10px 25px;
+    border-radius: 50px;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 500;
+    padding: 10px 25px;
+    border-radius: 50px;
+    transition: all 0.3s;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+
+
+/* Hero Section */
+.hero {
+    position: relative;
+    background: url('../../../fotosekolah.jpg') no-repeat center center/cover;
+    padding: 180px 0;
+    color: var(--white-color);
+    text-align: center;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 92, 149, 0.7);
+}
+
+.hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-size: 3.8rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    color: var(--white-color);
+}
+
+.hero .lead {
+    font-size: 1.4rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.section-title h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* Countdown Section */
+#countdown-section {
+    background-color: var(--light-color);
+}
+.countdown-item {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.countdown-label {
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--dark-color);
+}
+
+/* Info Card */
+.info-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--white-color);
+}
+
+.info-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.info-card .card-body {
+    padding: 30px;
+}
+
+.info-card .card-title {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Announcement */
+.announcement-bar {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+/* FAQ */
+.faq-accordion .accordion-item {
+    border: 1px solid #e9ecef;
+    border-radius: 10px !important;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.faq-accordion .accordion-button {
+    font-weight: 600;
+    color: var(--dark-color);
+    background-color: var(--white-color);
+}
+
+.faq-accordion .accordion-button:not(.collapsed) {
+    color: var(--primary-color);
+    background-color: #e7f1ff;
+    box-shadow: none;
+}
+
+.faq-accordion .accordion-button:focus {
+    box-shadow: none;
+}
+
+/* Contact */
+.contact-info i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin-right: 15px;
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-color);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 40px 0;
+}
+
+footer .footer-brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--white-color);
+    margin-bottom: 20px;
+}
+
+footer .social-icons a {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.5rem;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+footer .social-icons a:hover {
+    color: var(--primary-color);
+}

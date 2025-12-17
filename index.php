@@ -16,7 +16,9 @@ $infos = [
 
 if ($result) {
     while ($row = $result->fetch_assoc()) {
-        $infos[$row['tipe']][] = $row;
+        if (isset($infos[$row['tipe']])) {
+            $infos[$row['tipe']][] = $row;
+        }
     }
 }
 ?>
@@ -164,7 +166,7 @@ if ($result) {
         section { scroll-margin-top: 100px; }
     </style>
 </head>
-<body>
+<body data-bs-spy="scroll" data-bs-target="#navbarNav">
 
     <nav class="navbar navbar-expand-lg fixed-top" id="navbar">
         <div class="container">
@@ -300,7 +302,6 @@ if ($result) {
             <?php else: ?>
                 <p class="text-center text-muted">Tidak ada pengumuman baru.</p>
             <?php endif; ?>
-        </section>
 
         <section id="profil" class="py-5">
             <div class="row align-items-center">
@@ -384,7 +385,7 @@ if ($result) {
                  </div>
              </div>
         </section>
-    </div>
+    </main>
 
     <footer>
         <div class="container">

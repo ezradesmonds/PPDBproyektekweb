@@ -1,0 +1,141 @@
+/* Custom CSS for Login Page */
+
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #f0f2f5;
+    --card-background-color: #ffffff;
+    --font-color: #333;
+    --error-color: #dc3545;
+}
+
+body.login-page {
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-container {
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    background-color: var(--card-background-color);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.login-form-container {
+    padding: 40px 50px;
+    width: 50%;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.login-header p {
+    color: var(--secondary-color);
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+.btn-login {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #0056b3;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.login-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+.login-image-container {
+    width: 50%;
+    background: url('../../../fotosekolah.jpg') center center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    text-align: center;
+    padding: 40px;
+    position: relative;
+}
+
+.login-image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 123, 255, 0.7);
+}
+
+.login-image-container h1, .login-image-container p {
+    position: relative;
+    z-index: 1;
+}
+
+.login-image-container h1 {
+    font-weight: 700;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.login-image-container p {
+    font-size: 1.1em;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        max-width: 450px;
+    }
+
+    .login-form-container, .login-image-container {
+        width: 100%;
+    }
+
+    .login-image-container {
+        min-height: 200px;
+    }
+}
