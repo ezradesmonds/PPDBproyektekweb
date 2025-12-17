@@ -10,8 +10,7 @@ include '../koneksi.php';
 // --- DELETE ACTION ---
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $id_to_delete = intval($_GET['id']);
-    // We should also delete the associated user account to keep the database clean
-    // First, get the user_id from the pendaftaran table
+    // Logic delete sama seperti sebelumnya...
     $sql_get_user = "SELECT user_id, foto FROM pendaftaran WHERE id = ?";
     $stmt_get_user = $koneksi->prepare($sql_get_user);
     $stmt_get_user->bind_param("i", $id_to_delete);
@@ -23,24 +22,18 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
         $user_id_to_delete = $row['user_id'];
         $foto_to_delete = $row['foto'];
 
-        // Delete from pendaftaran table
-        $sql_delete_pendaftaran = "DELETE FROM pendaftaran WHERE id = ?";
-        $stmt_delete_pendaftaran = $koneksi->prepare($sql_delete_pendaftaran);
-        $stmt_delete_pendaftaran->bind_param("i", $id_to_delete);
-        $stmt_delete_pendaftaran->execute();
+        $stmt_del_pen = $koneksi->prepare("DELETE FROM pendaftaran WHERE id = ?");
+        $stmt_del_pen->bind_param("i", $id_to_delete);
+        $stmt_del_pen->execute();
 
-        // Delete from users table
-        $sql_delete_user = "DELETE FROM users WHERE id = ?";
-        $stmt_delete_user = $koneksi->prepare($sql_delete_user);
-        $stmt_delete_user->bind_param("i", $user_id_to_delete);
-        $stmt_delete_user->execute();
+        $stmt_del_usr = $koneksi->prepare("DELETE FROM users WHERE id = ?");
+        $stmt_del_usr->bind_param("i", $user_id_to_delete);
+        $stmt_del_usr->execute();
         
-        // Delete photo file
         if (!empty($foto_to_delete) && file_exists('../assets/uploads/' . $foto_to_delete)) {
             unlink('../assets/uploads/' . $foto_to_delete);
         }
     }
-    
     header("Location: index.php?status=deleted");
     exit();
 }
@@ -53,10 +46,9 @@ $stats_query = "SELECT
     SUM(CASE WHEN status = 'diterima' THEN 1 ELSE 0 END) as diterima,
     SUM(CASE WHEN status = 'ditolak' THEN 1 ELSE 0 END) as ditolak
     FROM pendaftaran";
-$stats_result = $koneksi->query($stats_query);
-$stats = $stats_result->fetch_assoc();
+$stats = $koneksi->query($stats_query)->fetch_assoc();
 
-// --- SEARCH & FILTER ---
+// --- SEARCH & FILTER (Logika sama) ---
 $search = $_GET['search'] ?? '';
 $filter_status = $_GET['status'] ?? '';
 $filter_jurusan = $_GET['jurusan'] ?? '';
@@ -65,7 +57,6 @@ $sql = "SELECT p.id, p.nama_lengkap, u.nisn, p.jurusan_pilihan, p.status
         FROM pendaftaran p 
         JOIN users u ON p.user_id = u.id 
         WHERE 1=1";
-
 $params = [];
 $types = '';
 
@@ -88,15 +79,9 @@ if (!empty($filter_jurusan)) {
 
 $sql .= " ORDER BY p.created_at DESC";
 $stmt = $koneksi->prepare($sql);
-
-if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
-}
-
+if (!empty($params)) $stmt->bind_param($types, ...$params);
 $stmt->execute();
-$result = $stmt->get_result();
-$pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
-
+$pendaftar_list = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -104,24 +89,21 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - PPDB Sekolah Impian</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 <div class="d-flex">
-    <!-- Sidebar -->
     <div class="sidebar d-flex flex-column p-3">
         <div class="sidebar-header">
-            <a href="index.php" class="d-flex align-items-center text-white text-decoration-none">
-                <i class="fas fa-school me-2"></i>
-                <span class="fs-4">Admin PPDB</span>
+            <a href="index.php" class="d-flex align-items-center text-white text-decoration-none justify-content-center">
+                <i class="fas fa-graduation-cap fa-2x text-warning me-2"></i>
+                <span class="fs-4 brand-font fw-bold">Petra 2</span>
             </a>
         </div>
-        <ul class="nav nav-pills flex-column mb-auto">
+        <ul class="nav nav-pills flex-column mb-auto mt-4">
             <li class="nav-item">
                 <a href="index.php" class="nav-link active" aria-current="page">
                     <i class="fas fa-tachometer-alt fa-fw me-2"></i> Dashboard
@@ -138,45 +120,43 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                 </a>
             </li>
         </ul>
-        <div class="dropdown mt-auto">
-            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle p-2" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user-circle fa-fw me-2"></i>
+        <div class="dropdown mt-auto p-2 border-top border-light border-opacity-10 pt-3">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-2" style="width:32px; height:32px;"><i class="fas fa-user"></i></div>
                 <strong><?php echo htmlspecialchars($_SESSION['nama']); ?></strong>
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+            <ul class="dropdown-menu dropdown-menu-dark shadow">
                 <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt fa-fw me-2"></i> Sign out</a></li>
             </ul>
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-        <h1 class="mb-4">Dashboard Admin</h1>
+        <h2 class="mb-4 fw-bold" style="color: var(--primary-color);">Dashboard Overview</h2>
 
-        <!-- Stats -->
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-4">
+        <div class="row mb-4 g-4">
+            <div class="col-xl-3 col-md-6">
                 <div class="stat-card bg-primary">
                     <div class="stat-number"><?php echo $stats['total'] ?? 0; ?></div>
                     <div class="stat-text">Total Pendaftar</div>
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="stat-card bg-warning text-dark">
-                     <div class="stat-number"><?php echo $stats['menunggu'] ?? 0; ?></div>
-                    <div class="stat-text">Menunggu Verifikasi</div>
-                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card bg-warning">
+                     <div class="stat-number text-dark"><?php echo $stats['menunggu'] ?? 0; ?></div>
+                    <div class="stat-text text-dark">Menunggu Verifikasi</div>
+                    <div class="stat-icon text-dark"><i class="fas fa-clock"></i></div>
                 </div>
             </div>
-             <div class="col-xl-3 col-md-6 mb-4">
+             <div class="col-xl-3 col-md-6">
                 <div class="stat-card bg-success">
                      <div class="stat-number"><?php echo $stats['diterima'] ?? 0; ?></div>
                     <div class="stat-text">Diterima</div>
                     <div class="stat-icon"><i class="fas fa-user-check"></i></div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-3 col-md-6">
                 <div class="stat-card bg-danger">
                     <div class="stat-number"><?php echo $stats['ditolak'] ?? 0; ?></div>
                     <div class="stat-text">Ditolak</div>
@@ -185,24 +165,19 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
         
-        <!-- Pendaftar List -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Daftar Calon Siswa</h5>
-                <a href="export.php" class="btn btn-sm btn-outline-success"><i class="fas fa-file-excel me-2"></i> Export All</a>
+                <h5 class="mb-0"><i class="fas fa-table me-2"></i> Data Calon Siswa Terbaru</h5>
+                <a href="export.php" class="btn btn-sm btn-outline-success rounded-pill"><i class="fas fa-file-excel me-2"></i> Export CSV</a>
             </div>
             <div class="card-body">
-                <!-- Filter Form -->
                 <form method="GET" class="row g-3 mb-4">
                     <div class="col-md-4">
-                         <div class="input-group">
-                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" name="search" class="form-control" placeholder="Cari Nama atau NISN..." value="<?php echo htmlspecialchars($search); ?>">
-                        </div>
+                        <input type="text" name="search" class="form-control" placeholder="Cari Nama atau NISN..." value="<?php echo htmlspecialchars($search); ?>">
                     </div>
                     <div class="col-md-3">
                          <select name="status" class="form-select">
-                            <option value="">Semua Status</option>
+                            <option value="">-- Semua Status --</option>
                             <option value="menunggu" <?php echo $filter_status == 'menunggu' ? 'selected' : ''; ?>>Menunggu</option>
                             <option value="lolos" <?php echo $filter_status == 'lolos' ? 'selected' : ''; ?>>Lolos</option>
                             <option value="diterima" <?php echo $filter_status == 'diterima' ? 'selected' : ''; ?>>Diterima</option>
@@ -211,7 +186,7 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
                      <div class="col-md-3">
                         <select name="jurusan" class="form-select">
-                            <option value="">Semua Jurusan</option>
+                            <option value="">-- Semua Jurusan --</option>
                             <option value="IPA" <?php echo $filter_jurusan == 'IPA' ? 'selected' : ''; ?>>IPA</option>
                             <option value="IPS" <?php echo $filter_jurusan == 'IPS' ? 'selected' : ''; ?>>IPS</option>
                             <option value="Bahasa" <?php echo $filter_jurusan == 'Bahasa' ? 'selected' : ''; ?>>Bahasa</option>
@@ -222,10 +197,9 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </form>
 
-                <!-- Table -->
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle">
-                        <thead class="table-dark">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
                             <tr>
                                 <th>No</th>
                                 <th>Nama Lengkap</th>
@@ -237,9 +211,7 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                         </thead>
                         <tbody>
                             <?php if (empty($pendaftar_list)): ?>
-                                <tr>
-                                    <td colspan="6" class="text-center py-4">Tidak ada data pendaftar yang cocok.</td>
-                                </tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted">Tidak ada data pendaftar.</td></tr>
                             <?php else: ?>
                                 <?php 
                                     $status_map = [
@@ -252,18 +224,20 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                                 <?php foreach ($pendaftar_list as $index => $pendaftar): ?>
                                 <tr>
                                     <td><?php echo $index + 1; ?></td>
-                                    <td><strong><?php echo htmlspecialchars($pendaftar['nama_lengkap']); ?></strong></td>
+                                    <td>
+                                        <div class="fw-bold"><?php echo htmlspecialchars($pendaftar['nama_lengkap']); ?></div>
+                                    </td>
                                     <td><?php echo htmlspecialchars($pendaftar['nisn']); ?></td>
-                                    <td><?php echo htmlspecialchars($pendaftar['jurusan_pilihan']); ?></td>
+                                    <td><span class="badge bg-secondary rounded-pill"><?php echo htmlspecialchars($pendaftar['jurusan_pilihan']); ?></span></td>
                                     <td>
                                         <?php $status_info = $status_map[$pendaftar['status']]; ?>
-                                        <span class="badge text-dark-emphasis bg-<?php echo $status_info['class']; ?>-subtle border border-<?php echo $status_info['class']; ?>-subtle">
+                                        <span class="badge bg-<?php echo $status_info['class']; ?> rounded-pill">
                                             <?php echo $status_info['text']; ?>
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <a href="validasi.php?id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-primary btn-action" title="Lihat/Validasi"><i class="fas fa-eye"></i></a>
-                                        <a href="?action=delete&id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-danger btn-action" title="Hapus" onclick="return confirm('PERHATIAN: Menghapus data ini juga akan menghapus akun user terkait. Apakah Anda yakin?')"><i class="fas fa-trash"></i></a>
+                                        <a href="validasi.php?id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-primary btn-action"><i class="fas fa-eye"></i></a>
+                                        <a href="?action=delete&id=<?php echo $pendaftar['id']; ?>" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Hapus data ini?')"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -273,10 +247,8 @@ $pendaftar_list = $result->fetch_all(MYSQLI_ASSOC);
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

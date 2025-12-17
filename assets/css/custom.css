@@ -1,28 +1,110 @@
-/* Custom CSS for PPDB Sekolah */
+/* Custom CSS for Student Dashboard */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #0f3460;
+    --secondary-color: #e94560;
+    --accent-color: #fca311;
+    --light-bg: #f8f9fa;
+    --text-dark: #1a1a2e;
+    --card-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+}
 
 body {
-    background-color: #f8f9fa;
+    background-color: #f4f7fc;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
 }
 
+h1, h2, h3, .brand-font, .card-title {
+    font-family: 'Playfair Display', serif;
+}
+
+h4, h5, .nav-link, .btn {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar Theme */
 .navbar {
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 15px 0;
 }
 
+.navbar-brand {
+    color: var(--accent-color) !important;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.navbar-brand i { color: var(--white-color); }
+
+.navbar-text { color: rgba(255,255,255,0.8); }
+.navbar-text strong { color: var(--accent-color); }
+
+/* Card Theme */
 .card {
     border: none;
-    border-radius: .75rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    background: #fff;
+    overflow: hidden;
+    transition: transform 0.3s ease;
 }
 
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background-color: var(--white-color);
+    border-bottom: 2px solid #f0f0f0;
+    padding: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.card-header.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: var(--accent-color) !important;
+    border-bottom: none;
+}
+
+/* Status Card Specifics */
 .status-card .card-title {
-    font-size: 2.5rem;
-    font-weight: 300;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
 }
 
-.status-card .card-text {
-    font-size: 1.1rem;
+/* Buttons */
+.btn {
+    border-radius: 50px;
+    padding: 10px 25px;
+    font-weight: 500;
+    transition: all 0.3s;
 }
 
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    box-shadow: 0 4px 15px rgba(15, 52, 96, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: #16213e;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    border: none;
+    font-weight: 600;
+}
+
+/* Timeline Theme - FIX ICONS CENTERING HERE */
 .timeline {
     position: relative;
     padding: 1rem 0;
@@ -32,16 +114,15 @@ body {
     content: '';
     position: absolute;
     top: 0;
-    left: 18px;
+    left: 20px;
     height: 100%;
-    width: 4px;
+    width: 2px;
     background: #e9ecef;
-    border-radius: 2px;
 }
 
 .timeline-item {
     position: relative;
-    padding-left: 45px;
+    padding-left: 50px;
     margin-bottom: 2rem;
 }
 
@@ -49,31 +130,48 @@ body {
     position: absolute;
     left: 0;
     top: 0;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background: #e9ecef;
     color: #6c757d;
+    box-shadow: 0 0 0 4px #fff;
+    /* PENTING: Flexbox untuk menengahkan icon */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
     z-index: 1;
+    font-size: 1.1rem;
 }
 
 .timeline-item.active .icon {
-    background-color: var(--bs-primary);
-    color: #fff;
+    background-color: var(--primary-color);
+    color: var(--accent-color);
 }
 
 .timeline-item.success .icon {
-    background-color: var(--bs-success);
+    background-color: #2e8b57;
     color: #fff;
 }
 
 .timeline-item .content {
-    background: #fff;
-    padding: 1rem 1.5rem;
-    border-radius: .5rem;
+    border: none;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+/* Form Styles */
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 12px;
     border: 1px solid #dee2e6;
 }
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(15, 52, 96, 0.15);
+}
+
+.text-primary { color: var(--primary-color) !important; }

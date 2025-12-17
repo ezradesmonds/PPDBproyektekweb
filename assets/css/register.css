@@ -1,94 +1,117 @@
-/* Custom CSS for Registration Page */
+/* Custom CSS for Registration Page - Themed */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --background-color: #f0f2f5;
-    --card-background-color: #ffffff;
-    --font-color: #333;
-    --error-color: #dc3545;
-    --success-color: #28a745;
+    --primary-color: #0f3460;
+    --accent-color: #fca311;
+    --bg-color: #f4f7fc;
+    --white-color: #ffffff;
 }
 
 body.register-page {
-    background-color: var(--background-color);
+    background-color: var(--bg-color);
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     padding: 2rem 0;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .register-container {
     width: 100%;
     max-width: 600px;
+    padding: 0 15px;
 }
 
 .register-card {
-    background-color: var(--card-background-color);
+    background-color: var(--white-color);
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    border: none;
 }
 
 .register-header {
-    background-color: var(--primary-color);
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color), #16213e);
+    color: var(--white-color);
     text-align: center;
-    padding: 30px;
+    padding: 40px 30px;
+    position: relative;
 }
 
 .register-header h2 {
+    font-family: 'Playfair Display', serif;
     font-weight: 700;
     margin-bottom: 5px;
+    color: var(--accent-color);
 }
 
 .register-header p {
-    opacity: 0.9;
+    font-family: 'Poppins', sans-serif;
+    opacity: 0.8;
     margin: 0;
+    font-size: 0.95rem;
 }
 
 .register-body {
     padding: 40px;
 }
 
+.form-label {
+    font-weight: 500;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
 .form-control {
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 12px 15px;
-    border: 1px solid #ced4da;
+    border: 1px solid #dee2e6;
     transition: all 0.3s ease;
+    background-color: #f8f9fa;
 }
 
 .form-control:focus {
+    background-color: #fff;
     border-color: var(--primary-color);
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    box-shadow: 0 0 0 4px rgba(15, 52, 96, 0.1);
 }
 
 .btn-register {
     background-color: var(--primary-color);
+    color: var(--accent-color);
     border: none;
-    border-radius: 8px;
+    border-radius: 50px;
     padding: 12px;
     font-weight: 600;
-    transition: background-color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    margin-top: 10px;
 }
 
 .btn-register:hover {
-    background-color: #0056b3;
+    background-color: #16213e;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(15, 52, 96, 0.3);
 }
 
 .register-footer {
     text-align: center;
-    margin-top: 25px;
+    margin-top: 30px;
     font-size: 0.9em;
+    color: #6c757d;
 }
 
 .register-footer a {
     color: var(--primary-color);
     text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
 }
 
 .register-footer a:hover {
-    text-decoration: underline;
+    color: var(--accent-color);
 }
