@@ -56,22 +56,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         $pendaftaran_id = $pendaftaran ? $pendaftaran['id'] : $koneksi->insert_id;
-        $feedback['success'] = "Data berhasil disimpan!";
         
-        // Handle File Uploads (Simplified for brevity, logic remains same)
         $stmt_refetch = $koneksi->prepare("SELECT foto, kk, akta, sertifikat FROM pendaftaran WHERE id = ?");
         $stmt_refetch->bind_param("i", $pendaftaran_id);
         $stmt_refetch->execute();
         $current_files = $stmt_refetch->get_result()->fetch_assoc();
+
         foreach (['foto', 'kk', 'akta', 'sertifikat'] as $field) {
-            $current = $current_files[$field] ?? null;
-            $res = upload_file($field, $pendaftaran_id, $current);
-            if (isset($res['success'])) {
-                $koneksi->query("UPDATE pendaftaran SET $field = '{$res['success']}' WHERE id = $pendaftaran_id");
-            } elseif (isset($res['error'])) { $feedback['error'] .= $res['error'] . "<br>"; }
+            if (isset($_FILES[$field]) && $_FILES[$field]['error'] == 0) {
+                $current = $current_files[$field] ?? null;
+                $res = upload_file($field, $pendaftaran_id, $current);
+                
+                if (isset($res['success'])) {
+                    $stmt_upd = $koneksi->prepare("UPDATE pendaftaran SET $field = ? WHERE id = ?");
+                    $stmt_upd->bind_param("si", $res['success'], $pendaftaran_id);
+                    $stmt_upd->execute();
+                } elseif (isset($res['error'])) { 
+                    $feedback['error'] .= "Gagal upload $field: " . $res['error'] . "<br>"; 
+                }
+            }
         }
-        if(empty($feedback['error'])) { header("Location: index.php?status=submitted"); exit(); }
-    } else { $feedback['error'] = "Gagal menyimpan data."; }
+
+        if (empty($feedback['error'])) {
+            header("Location: index.php?status=submitted");
+            exit();
+        } else {
+            $feedback['error'] = "Data profil disimpan, NAMUN ada kendala dokumen:<br>" . $feedback['error'];
+        }
+    } else { 
+        $feedback['error'] = "Gagal menyimpan data ke database."; 
+    }
+
     $stmt_fetch->execute();
     $pendaftaran = $stmt_fetch->get_result()->fetch_assoc();
 }
